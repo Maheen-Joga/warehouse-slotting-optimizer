@@ -9,7 +9,7 @@ Standard library only. Synthetic data only.
 
 - [x] Layout model: aisles, pick faces, coordinates
 - [x] Pick routing: return and s-shape walk distance
-- [ ] Slotting policies (random, popularity) and synthetic order simulation
+- [x] Slotting policies (random, popularity) and synthetic order simulation
 - [ ] Command-line comparison of policies
 - [ ] Demand forecast backtest (naive, EWMA, Holt)
 - [ ] Results write-up and assumptions
