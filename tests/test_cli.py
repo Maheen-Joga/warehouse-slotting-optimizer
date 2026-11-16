@@ -6,3 +6,4 @@ def test_cli_prints_comparison_table(capsys):
     out = capsys.readouterr().out
     assert "metres/order" in out
     assert "popularity" in out and "random" in out
+    assert "backtest" in out

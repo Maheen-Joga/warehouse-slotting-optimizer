@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import argparse
 
+from .forecast import backtest_forecast
 from .layout import Layout
 from .policies import assign_slots
-from .simulate import average_travel, generate_orders, zipf_weights
+import random
+
+from .simulate import _poisson, average_travel, generate_orders, zipf_weights
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -41,6 +44,16 @@ def main(argv: list[str] | None = None) -> int:
             change = "" if baseline is None else f"{(m - baseline) / baseline * 100:+.1f}%"
             print(f"{policy:<12}{routing:<10}{m:>14.1f}{change:>12}")
 
+    # Weekly pick history: Poisson noise around a per-SKU level with a gentle trend.
+    rng = random.Random(args.seed)
+    history = {
+        sku: [_poisson(rng, w * 800 * (1 + 0.01 * t)) for t in range(26)]
+        for sku, w in weights.items()
+    }
+    scores = backtest_forecast(history, holdout=4)
+    print("\nDemand forecast backtest (last 4 weeks, one-step-ahead, MAE in picks/week):")
+    for method in ("naive", "ewma", "holt"):
+        print(f"  {method:<6}{scores[f'{method}_mae']:>8.2f}")
     return 0
 
 
